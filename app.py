@@ -64,9 +64,8 @@ movies = [
 
 @app.route('/')
 def index():
-    user = User.query.first()
     movies = Movie.query.all()
-    return render_template('index.html', user=user, movies=movies)
+    return render_template('index.html', movies=movies)
 
 import click
 
@@ -85,7 +84,7 @@ def forge():
     db.create_all()
 
     # 全局的两个变量移动到这个函数内
-    name = 'Grey Li'
+    name = 'jerry'
     movies = [
         {'title': 'My Neighbor Totoro', 'year': '1988'},
         {'title': 'Dead Poets Society', 'year': '1989'},
@@ -107,3 +106,12 @@ def forge():
 
     db.session.commit()
     click.echo('Done.')
+
+@app.errorhandler(404)
+def page_not_found(e):# 接受异常对象作为参数
+    return render_template('404.html'), 404 # 返回模板和状态码
+
+@app.context_processor
+def inject_user():  # 函数名可以随意修改
+    user = User.query.first()
+    return dict(user=user)  # 需要返回字典，等同于 return {'user': user}
