@@ -2,7 +2,7 @@ from flask import render_template, request, url_for, redirect, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Movie, Comment
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -108,3 +108,23 @@ def logout():
     logout_user()
     flash('Goodbye.')
     return redirect(url_for('index'))
+
+@app.route('/comment', methods=['GET', 'POST'])
+def comment():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        content = request.form.get('content')
+
+        if not name or not content:
+            flash('Invalid input')
+            return redirect(url_for('comment'))
+
+        comment = Comment(name=name, content=content)
+        
+        db.session.add(comment)
+        db.session.commit()
+        flash('Thank you for your comment!')
+        return redirect(url_for('comment'))
+    
+    comments = Comment.query.all()
+    return render_template('comment.html', comments=comments)

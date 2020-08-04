@@ -1,7 +1,7 @@
 import unittest
 
 from watchlist import app, db
-from watchlist.models import Movie, User
+from watchlist.models import Movie, User, Comment
 from watchlist.commands import forge, initdb
 
 
@@ -267,6 +267,18 @@ class WatchlistTestCase(unittest.TestCase):
         self.assertEqual(User.query.count(), 1)
         self.assertEqual(User.query.first().username, 'peter')
         self.assertTrue(User.query.first().validate_password('456'))
+
+    def test_comment_page(self):
+        # test of submitting comment\
+
+        response = self.client.post('/comment', data=dict(
+            name='anonymous',
+            content='abc'
+        ), follow_redirects=True)
+        data = response.get_data(as_text=True)
+        self.assertIn('Thank you for your comment!', data)
+        self.assertIn('anonymous', data)
+        
 
 if __name__ == '__main__':
     unittest.main()

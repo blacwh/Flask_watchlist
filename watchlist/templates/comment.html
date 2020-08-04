@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Saying</h1>
+<form method="post">
+    Name<br>
+    <input type="text" name="name" required autocomplete="off"><br><br>
+    Comment<br>
+    <input type="text" name="content" required autocomplete="off"><br><br>
+    <input class="btn" type="submit" name="submit" value="Submit">
+<form>
+<p>{{ comments|length }} COMMENTS</p>
+<ul class="comment list">
+    {% for comment in comments %}
+    <li>{{ comment.name }} - 
+        {{ comment.content }}
+    </li>
+    {% endfor %}
+</ul>
+<img alt="nerv" class="logo" src="{{ url_for('static', filename='images/nervlogo.gif') }}" title="nerv">
+{% endblock %}

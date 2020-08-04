@@ -1,7 +1,7 @@
 import click
 
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Movie, Comment
 
 
 @app.cli.command()
@@ -42,6 +42,21 @@ def forge():
     db.session.commit()
     click.echo('Done.')
 
+@app.cli.command()
+def comment():
+    db.create_all()
+
+    comments = [
+        {'name': 'James', 'content':'how are you?'},
+        {'name': 'Mike', 'content':'nice to see you'},
+        {'name': 'Alex', 'content':'see you around'},
+    ]
+    for c in comments:
+        comment = Comment(name=c['name'], content=c['content'])
+        db.session.add(comment)
+
+    db.session.commit()
+    click.echo('Done')
 
 @app.cli.command()
 @click.option('--username', prompt=True, help='The username used to login.')
